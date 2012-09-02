@@ -15,9 +15,9 @@ class OmegaDoomClient(irc.IRCClient):
   def signedOn(self):
     print 'Signed on:', self.nickname
    
-   nickserv_pass = self._ascii_get('nickserv_pass')
-   if nickserv_pass:
-     self.msg('nickserv', 'identify %s' % (nickserv_pass))
+    nickserv_pass = self._ascii_get('nickserv_pass')
+    if nickserv_pass:
+      self.msg('nickserv', 'identify %s' % (nickserv_pass))
 
     for channel in self.config['channels']:
       self.join(channel.encode('ascii', 'ignored'))

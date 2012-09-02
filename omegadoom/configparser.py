@@ -6,7 +6,7 @@ class OmegaDoomConfigParser(object):
                     {'key': 'nickname',      'type': basestring, 'required': True},
                     {'key': 'channels',      'type': basestring, 'required': True,  'multivalued': True},
                     {'key': 'admins',        'type': basestring, 'required': True,  'multivalued': True},
-                    {'key': 'nickserv_pass', 'type': basestring, 'required': False},
+                    {'key': 'nickserv_pass', 'type': basestring, 'required': False}]
 
 
   def __init__(self, schema = None):
