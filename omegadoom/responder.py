@@ -1,5 +1,6 @@
 
 class OmegaDoomClientResponder(object):
+  COMMAND_CHARACTER = '!'
 
   def __init__(self, config, protocol, plugin_manager):
     self._config = config
@@ -10,7 +11,7 @@ class OmegaDoomClientResponder(object):
   def privmsg(self, user, channel, msg):
     print user, channel, msg
   
-    if msg.startswith('!'):
+    if msg.startswith(self.COMMAND_CHARACTER):
       command = msg.split(' ')[0][1:]
       data = msg[msg.find(command) + len(command):].strip()
       
