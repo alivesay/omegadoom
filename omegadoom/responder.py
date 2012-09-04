@@ -1,6 +1,6 @@
 
 class OmegaDoomClientResponder(object):
-  COMMAND_CHARACTER = '!'
+  COMMAND_CHARACTER = '$'
 
   def __init__(self, config, protocol, plugin_manager):
     self._config = config

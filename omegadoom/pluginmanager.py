@@ -38,12 +38,9 @@ class OmegaDoomPluginManager(object):
     basename, extension = os.path.splitext(os.path.basename(filename))
    
     try:
-      if extension.lower() in ['.py','.pyc']:
+      if extension.lower() == '.py':
         with open(filename, 'r') as f:
-          if extension.lower() == '.py':
-            module = imp.load_source(basename, filename, f) 
-          elif extension.lower() == '.pyc':
-            module = imp.load_compiled(basename, filename, f)
+          module = imp.load_source(basename, filename, f) 
 
         if hasattr(module, 'OmegaDoomPlugin'):
           self._register_plugin(basename, filename, module.OmegaDoomPlugin(self._config)) 
