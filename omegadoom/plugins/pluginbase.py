@@ -1,3 +1,5 @@
+import redis
+
 from omegadoom.util import OmegaDoomUtil
 
 class OmegaDoomPluginBase(object):
@@ -7,9 +9,16 @@ class OmegaDoomPluginBase(object):
 
   def __init__(self, config):
     self._config = config
+    self._redis = redis.Redis(host='localhost', port=6739, db=0)
     self.setup()
 
-  
+
+  def _get_config(self):
+    return self._config
+  config = property(_get_config)
+
+ 
+  # called by __init__
   def setup(self):
     pass
 
@@ -25,7 +34,4 @@ class OmegaDoomPluginBase(object):
     pass
 
 
-  def _get_config(self):
-    return self._config
-  config = property(_get_config)
 

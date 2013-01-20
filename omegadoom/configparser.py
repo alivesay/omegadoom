@@ -1,12 +1,15 @@
 import json
 
 class OmegaDoomConfigParser(object):
-  DEFAULT_SCHEMA = [{'key': 'network',       'type': basestring, 'required': True},
-                    {'key': 'port',          'type': int,        'required': True},
-                    {'key': 'nickname',      'type': basestring, 'required': True},
-                    {'key': 'channels',      'type': basestring, 'required': True,  'multivalued': True},
-                    {'key': 'admins',        'type': basestring, 'required': True,  'multivalued': True},
-                    {'key': 'nickserv_pass', 'type': basestring, 'required': False}]
+  DEFAULT_SCHEMA = [{'key': 'network'},
+                    {'key': 'port',          'type': int},
+                    {'key': 'nickname'},
+                    {'key': 'channels',      'multivalued': True},
+                    {'key': 'admins',        'multivalued': True},
+                    {'key': 'redis_host',    'required': False},
+                    {'key': 'redis_port',    'type': int, 'required': False},
+                    {'key': 'nickserv_pass', 'required': False},
+                    {'key': 'command_char',  'required': True}]
 
 
   def __init__(self, schema = None):
@@ -14,24 +17,30 @@ class OmegaDoomConfigParser(object):
       schema = self.DEFAULT_SCHEMA
       if self._validate_schema(schema):
         self._schema = schema
-      else:
-        raise ValueError('invalid schema')
 
 
   def _validate_schema(self, schema):
-    return isinstance(schema, list) and all((isinstance(i, dict) and 'key' in i and 'type' in i for i in schema))
+    return isinstance(schema, list) and all((isinstance(i, dict) and 'key' in i for i in schema))
 
 
   def _validate_config(self, config, schema):
     for entry in schema:
-      if entry['key'] in config:
-        if entry.get('multivalued'):
-          if not all((isinstance(item, entry['type']) for item in config[entry['key']])):
-            raise TypeError("'%s' must be a list of type '%s'" % (entry['key'], entry['type']))
-        elif not isinstance(config[entry['key']], entry['type']):
-          raise TypeError("'%s' must be of type '%s'" % (entry['key'], entry['type']))
-      elif entry.get('required'):
-        raise KeyError("missing required attribute '%s'" % entry['key'])
+
+      entry_key = entry['key']
+
+      if entry_key in config:
+        entry_type = entry.get('type', basestring)
+
+        if entry.get('multivalued', False):
+          
+          if not all((isinstance(item, entry_type) for item in config[entry_key])):
+            raise TypeError("'%s' must be a list of type '%s'" % (entry_key, entry_type))
+        
+        elif not isinstance(config[entry_key], entry_type):
+          raise TypeError("'%s' must be of type '%s'" % (entry_key, entry_type))
+      
+      elif entry.get('required', True):
+        raise KeyError("missing required attribute '%s'" % entry_key)
 
 
   def load(self, filename):

@@ -8,20 +8,20 @@ class OmegaDoomClientResponder(object):
     self._plugin_manager = plugin_manager
 
 
-  def privmsg(self, user, channel, msg):
-    print user, channel, msg
+  def privmsg(self, prefix, channel, message):
+    print prefix, channel, message
   
-    if msg.startswith(self.COMMAND_CHARACTER):
-      command = msg.split(' ')[0][1:]
-      data = msg[msg.find(command) + len(command):].strip()
+    if message.startswith(self.COMMAND_CHARACTER):
+      command = message.split(' ')[0][1:]
+      data = message[message.find(command) + len(command):].strip()
       
       if command:
         self._plugin_manager.run_command(self._protocol,
                                          command,
                                          data,
-                                         (user, channel, msg))
+                                         (prefix, channel, message))
 
-    
+  # WTF WHY IS THIS HERE?  
   def pong(self, user, secs):
     self._plugin_manager.notify(self._protocol, 'pong', user, secs)
     

@@ -5,7 +5,8 @@ from omegadoom.util import OmegaDoomUtil
 
 
 class OmegaDoomPlugin(OmegaDoomPluginBase):
-  commands = ['ping', 'version']
+
+  commands = ['ping', 'version', 'echo']
 
 
   def setup(self):
@@ -15,10 +16,14 @@ class OmegaDoomPlugin(OmegaDoomPluginBase):
   def run_command(self, protocol, command, data, privmsg):
     prefix, channel, message = privmsg
     nick, ident, host = OmegaDoomUtil.parse_prefix(prefix)
+    nick_or_channel = nick if channel == self.config['nickname'] else channel
 
     if command == 'ping':
       self._ping_requests[nick] = (privmsg, datetime.now())
       protocol.ping(nick)
+
+    elif command == 'echo':
+      protocol.msg(nick_or_channel, message)
 
 
   def notify(self, protocol, event, *args):
@@ -29,13 +34,13 @@ class OmegaDoomPlugin(OmegaDoomPluginBase):
   def _notify_pong(self, protocol, *args):
       prefix, secs = args
       nick, ident, host = OmegaDoomUtil.parse_prefix(prefix)
- 
+      
       if nick in self._ping_requests:
         privmsg, timestamp = self._ping_requests[nick]
         prefix, channel, message = privmsg
        
-        protocol.msg(nick if channel == self.config['nickname'] else channel,
-                     'CTCP PING reply in %s secs' % (secs))
+        nick_or_channel = nick if channel == self.config['nickname'] else channel
+        protocol.msg(nick_or_channel, 'CTCP PING reply in %s secs' % (secs))
 
         del(self._ping_requests[nick])
 
@@ -44,5 +49,3 @@ class OmegaDoomPlugin(OmegaDoomPluginBase):
         for k,v in self._ping_requests.items():
           if (now - v[1]).seconds > 60:
             del(self._ping_requests[k])
-
-
