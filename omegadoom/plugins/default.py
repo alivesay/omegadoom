@@ -23,7 +23,10 @@ class OmegaDoomPlugin(OmegaDoomPluginBase):
       protocol.ping(nick)
 
     elif command == 'echo':
-      protocol.msg(nick_or_channel, message)
+      protocol.msg(nick, message)
+
+#    elif command == 'dns':
+#      self._dns_requests[nick] = (priv
 
 
   def notify(self, protocol, event, *args):
@@ -38,7 +41,7 @@ class OmegaDoomPlugin(OmegaDoomPluginBase):
       if nick in self._ping_requests:
         privmsg, timestamp = self._ping_requests[nick]
         prefix, channel, message = privmsg
-       
+     
         nick_or_channel = nick if channel == self.config['nickname'] else channel
         protocol.msg(nick_or_channel, 'CTCP PING reply in %s secs' % (secs))
 
