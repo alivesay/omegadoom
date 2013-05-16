@@ -48,7 +48,7 @@ class OmegaDoomClient(irc.IRCClient):
 
   
   def pong(self, user, secs):
-    self.responder.pong(user, secs)
+    self.responder.notify('pong', user, secs)
     print 'CTCP PING reply from %s : %s seconds' % (user, secs)
 
 

@@ -21,7 +21,6 @@ class OmegaDoomClientResponder(object):
                                          data,
                                          (prefix, channel, message))
 
-  # WTF WHY IS THIS HERE?  
-  def pong(self, user, secs):
-    self._plugin_manager.notify(self._protocol, 'pong', user, secs)
-    
+  def notify(self, event, *args):
+    self._plugin_manager.notify(self._protocol, event, *args)
+
