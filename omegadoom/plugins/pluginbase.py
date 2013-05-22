@@ -2,6 +2,8 @@ import redis
 from collections import namedtuple
 from datetime import datetime
 from twisted.internet.task import LoopingCall
+import sys
+import imp
 
 OmegaDoomPluginRequest = namedtuple('PluginRequest', ['privmsg', 'timestamp'])
 
@@ -22,8 +24,13 @@ class OmegaDoomPluginBase(object):
         
         self._request_cleanup_lc = LoopingCall(self.request_cleanup)
         self._request_cleanup_lc.start(self.REQUEST_CLEANUP_INTERVAL)
-
-
+        
+        for mod in (m for m in sys.modules.values() if m is not None):    
+            if mod.__name__.startswith('omegadoom.plugins') and mod.__name__ != 'omegadoom.plugins.pluginbase':
+                print "reloaded: ", mod.__name__
+                reload(mod)
+            
+            
     def _get_config(self):
         return self._config
     config = property(_get_config)

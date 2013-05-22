@@ -30,7 +30,7 @@ class OmegaDoomPluginManager(object):
         # start monitoring plugin directory for changes
         self._observer = Observer()
         self._fseh = OmegaDoomPluginManagerFSEH(self._load_plugin)
-        self._observer.schedule(self._fseh, self._plugin_path, recursive=False)
+        self._observer.schedule(self._fseh, self._plugin_path, recursive=True)
         self._observer.start()
 
 
@@ -38,12 +38,13 @@ class OmegaDoomPluginManager(object):
         """ Loads source files containing valid OmegaDoom plugins. """
 
         basename, extension = os.path.splitext(os.path.basename(filename))
-   
+    
         try:
             if extension.lower() == '.py':
                 with open(filename, 'r') as f:
-                    module = imp.load_source(basename, filename, f) 
-
+                    print "LOADED:", basename, filename
+                    module = imp.load_module(basename, f, filename, ('.py', 'r', imp.PY_SOURCE))
+                    
                 if hasattr(module, 'OmegaDoomPlugin'):
                     self._register_plugin(basename, filename, module.OmegaDoomPlugin(self._config)) 
 
