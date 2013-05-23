@@ -6,7 +6,7 @@ from omegadoom.util import OmegaDoomUtil
 
 class OmegaDoomPlugin(OmegaDoomPluginBase):
 
-    commands = ['ping', 'version', 'echo', 'dns']
+    commands = ['ping', 'version', 'echo', 'dns', 'lol']
 
     def run_command(self, protocol, command, data, privmsg):
         prefix, channel, message = privmsg
@@ -24,6 +24,10 @@ class OmegaDoomPlugin(OmegaDoomPluginBase):
             self.requests[(command, nick)] = OmegaDoomPluginRequest(privmsg, datetime.now())
             d = twisted.names.client.getHostByName(data)
             d.addBoth(self._dns_callback, protocol, prefix, data)
+            
+        elif command == 'lol':
+            if data:
+                protocol.msg(nick, "lol" + "ol"*max(int(data), 42))
 
 
     def _dns_callback(self, results, protocol, *args):
