@@ -28,11 +28,11 @@ class OmegaDoomPlugin(OmegaDoomPluginBase):
             d.addBoth(self._dns_callback, protocol, prefix, data)
             
         elif command == 'lol':
-            if data:
-                if data == '∞':
-                  protocol.msg(nick_or_channel, "All hail the loloboros!")
-                else:
-                  protocol.msg(nick_or_channel, "lol" + "ol"*min(int(data), 42))
+            if data == '∞':
+                protocol.msg(nick_or_channel, "All hail the loloboros!")
+            else:
+                lol_len = min(int(data), 42) - 1 if data.isdigit() else 0
+                protocol.msg(nick_or_channel, "lol" + "ol"*lol_len)
 
 
     def _dns_callback(self, results, protocol, *args):
