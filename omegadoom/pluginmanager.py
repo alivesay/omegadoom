@@ -42,7 +42,6 @@ class OmegaDoomPluginManager(object):
         try:
             if extension.lower() == '.py':
                 with open(filename, 'r') as f:
-                    print "LOADED:", basename, filename
                     module = imp.load_module(basename, f, filename, ('.py', 'r', imp.PY_SOURCE))
                     
                 if hasattr(module, 'OmegaDoomPlugin'):
