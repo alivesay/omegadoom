@@ -1,3 +1,5 @@
+# coding:utf-8
+
 from datetime import datetime
 import twisted.names.client
 
@@ -27,7 +29,10 @@ class OmegaDoomPlugin(OmegaDoomPluginBase):
             
         elif command == 'lol':
             if data:
-                protocol.msg(nick, "lol" + "ol"*max(int(data), 42))
+                if data == '∞':
+                  protocol.msg(nick_or_channel, "All hail the loloboros!")
+                else:
+                  protocol.msg(nick_or_channel, "lol" + "ol"*min(int(data), 42))
 
 
     def _dns_callback(self, results, protocol, *args):
