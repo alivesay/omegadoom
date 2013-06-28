@@ -10,7 +10,7 @@ from omegadoom.util import OmegaDoomUtil
 
 class OmegaDoomPlugin(OmegaDoomPluginBase):
 
-    commands = ['ping', 'version', 'echo', 'dns', 'lol']
+    commands = ['ping', 'version', 'echo', 'dns', 'lol', 'youtube']
 
     yt_svc = gdata.youtube.service.YouTubeService()
 
