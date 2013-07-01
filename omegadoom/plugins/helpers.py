@@ -35,7 +35,7 @@ class OmegaDoomPlugin(OmegaDoomPluginBase):
                         title = entry.media.title.text
                         duration = timedelta(seconds=int(entry.media.duration.seconds))
                         categories = ', '.join([c.text for c in entry.media.category])
-                        protocol.msg(nick_or_channel, '[%s | %s | %s]' % (title, duration, categories))
+                        protocol.msg(nick_or_channel, '[%s | %s | %s] - %s' % (title, duration, categories), 'https://youtu.be/%s' % video_id)
                 else:
                     protocol.msg(nick_or_channel, '[Error: invalid video URL]')
                     
