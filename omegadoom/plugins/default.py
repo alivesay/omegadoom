@@ -2,17 +2,14 @@
 
 from datetime import datetime
 import twisted.names.client
-import gdata.youtube
-import gdata.youtube.service
+import urlparse
 
 from omegadoom.plugins.pluginbase import OmegaDoomPluginBase, OmegaDoomPluginRequest
 from omegadoom.util import OmegaDoomUtil
 
 class OmegaDoomPlugin(OmegaDoomPluginBase):
 
-    commands = ['ping', 'version', 'echo', 'dns', 'lol', 'youtube']
-
-    yt_svc = gdata.youtube.service.YouTubeService()
+    commands = ['ping', 'version', 'echo', 'dns', 'lol']
 
     def run_command(self, protocol, command, data, privmsg):
         prefix, channel, message = privmsg
@@ -37,18 +34,6 @@ class OmegaDoomPlugin(OmegaDoomPluginBase):
             else:
                 lol_len = min(int(data), 42) - 1 if data.isdigit() else 0
                 protocol.msg(nick_or_channel, "lol" + "ol"*lol_len)
-        
-        elif command == 'youtube':
-            try:
-                yt_url = urlparse.urlparse(data)
-                query = urlparse.parse_qs(yt_url.query)
-                video_id = query["v"][0]
-                entry = self.yt_svc.GetYouTubeVideoEntry(video_id=video_id)
-                if entry:
-                    protocol.msg(nick_or_channel, "[%s]" % (entry.media.title.text))
-            except:
-                protocol.msg(nick_or_channel, "[Error: bad url]")
-
 
 
     def _dns_callback(self, results, protocol, *args):
