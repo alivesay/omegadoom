@@ -25,17 +25,18 @@ class OmegaDoomPlugin(OmegaDoomPluginBase):
         if command == 'youtube':
             try:
                 # TODO: needs deferred
-                search = re.search(self.matched_commands[command], data)
-                if search:
-                    yt_url = urlparse.urlparse(search.group(0))
-                    query = urlparse.parse_qs(yt_url.query)
-                    video_id = query['v'][0]
-                    entry = self.yt_svc.GetYouTubeVideoEntry(video_id=video_id)
-                    if entry:
-                        title = entry.media.title.text
-                        duration = timedelta(seconds=int(entry.media.duration.seconds))
-                        categories = ', '.join([c.text for c in entry.media.category])
-                        protocol.msg(nick_or_channel, '[%s | %s | %s] - %s' % (title, duration, categories), 'https://youtu.be/%s' % video_id)
+                url_matches = re.findall(self.matched_commands[command], data)
+                if url_matches:
+                    for url in url_matches:
+                        yt_url = urlparse.urlparse(url)
+                        query = urlparse.parse_qs(yt_url.query)
+                        video_id = query['v'][0]
+                        entry = self.yt_svc.GetYouTubeVideoEntry(video_id=video_id)
+                        if entry:
+                            title = entry.media.title.text
+                            duration = timedelta(seconds=int(entry.media.duration.seconds))
+                            categories = ', '.join([c.text for c in entry.media.category])
+                            protocol.msg(nick_or_channel, '[%s | %s | %s] - %s' % (title, duration, categories), 'https://youtu.be/%s' % video_id)
                 else:
                     protocol.msg(nick_or_channel, '[Error: invalid video URL]')
                     
