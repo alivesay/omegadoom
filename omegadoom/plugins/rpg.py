@@ -45,6 +45,6 @@ class OmegaDoomPlugin(OmegaDoomPluginBase):
                 protocol.msg(target, 'You found a %s!' % (w))
             elif search_check <= 5:
                 player_credits = roll('1d100')
-            protocol.msg(target, 'You found %s credits!' % (player_credits))
-        else:
-            protocol.msg(target, 'You found... nothing.')
+                protocol.msg(target, 'You found %s credits!' % (player_credits))
+            else:
+                protocol.msg(target, 'You found... nothing.')

@@ -6,14 +6,17 @@ import gdata.youtube.service
 from gdata.service import RequestError
 import urlparse
 import re
+import urllib
+import urllib2
+import json
 
 from omegadoom.plugins.pluginbase import OmegaDoomPluginBase, OmegaDoomPluginRequest
 from omegadoom.util import OmegaDoomUtil
 
 class OmegaDoomPlugin(OmegaDoomPluginBase):
 
-    commands = ['youtube']
-    matched_commands = { 'youtube': r'http:\/\/(?:www\.)?youtube.com\/watch\?(?=[^?]*v=\w+)(?:[^\s?]+)?' }
+    commands = ['youtube', 'tts']
+    matched_commands = { 'youtube': r'https?:\/\/(?:www\.)?youtube.com\/watch\?(?=[^?]*v=\w+)(?:[^\s?]+)?' }
     
     yt_svc = gdata.youtube.service.YouTubeService()
 
@@ -36,7 +39,7 @@ class OmegaDoomPlugin(OmegaDoomPluginBase):
                             title = entry.media.title.text
                             duration = timedelta(seconds=int(entry.media.duration.seconds))
                             categories = ', '.join([c.text for c in entry.media.category])
-                            protocol.msg(nick_or_channel, '[%s | %s | %s] - %s' % (title, duration, categories, 'https://youtu.be/%s' % video_id))
+                            protocol.msg(nick_or_channel, '[%s | %s | %s] - %s' % (title, duration, categories, 'http://y2u.be/%s' % video_id))
                 else:
                     protocol.msg(nick_or_channel, '[Error: invalid video URL]')
                     
@@ -46,3 +49,11 @@ class OmegaDoomPlugin(OmegaDoomPluginBase):
                 
             except Exception as e:
                 protocol.msg(nick_or_channel, '[Error: unhandled exception]' % e)
+
+
+        elif command == 'tts':
+            tts_url = 'http://tts-api.com/tts.mp3?q=%s' % data
+            req = urllib2.Request('http://tinyurl.com/api-create.php','url=%s' % urllib.quote(tts_url))
+            results = urllib2.urlopen(req)
+            say_url = results.read()
+            protocol.msg(nick_or_channel, say_url)
