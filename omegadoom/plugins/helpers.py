@@ -16,7 +16,8 @@ from omegadoom.util import OmegaDoomUtil
 class OmegaDoomPlugin(OmegaDoomPluginBase):
 
     commands = ['youtube', 'tts']
-    matched_commands = { 'youtube': r'https?:\/\/(?:www\.)?youtube.com\/watch\?(?=[^?]*v=\w+)(?:[^\s?]+)?' }
+    matched_commands = { 'youtube': r'https?:\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?[\w\?=]*)?' }
+#    matched_commands = { 'youtube': r'https?:\/\/(?:www\.)?youtube.com\/watch\?(?=[^?]*v=\w+)(?:[^\s?]+)?' }
     
     yt_svc = gdata.youtube.service.YouTubeService()
 
@@ -31,10 +32,13 @@ class OmegaDoomPlugin(OmegaDoomPluginBase):
                 url_matches = re.findall(self.matched_commands[command], data)
                 if url_matches:
                     for url in url_matches:
-                        yt_url = urlparse.urlparse(url)
-                        query = urlparse.parse_qs(yt_url.query)
-                        video_id = query['v'][0]
-                        entry = self.yt_svc.GetYouTubeVideoEntry(video_id=video_id)
+                        video_id = url[0]
+
+			if len(url) > 0 and url[0]: 
+                            entry = self.yt_svc.GetYouTubeVideoEntry(video_id=video_id)
+			else:
+                            return
+
                         if entry:
                             title = entry.media.title.text
                             duration = timedelta(seconds=int(entry.media.duration.seconds))
